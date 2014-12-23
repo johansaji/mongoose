@@ -10,7 +10,7 @@ static void send_file(struct mg_connection *conn, const char *path) {
   struct stat st;
   int n;
   FILE *fp;
-
+  printf("sending file\n");
   if (stat(path, &st) == 0 && (fp = fopen(path, "rb")) != NULL) {
     mg_printf(conn, "--w00t\r\nContent-Type: image/jpeg\r\n"
               "Content-Length: %lu\r\n\r\n", (unsigned long) st.st_size);
@@ -39,12 +39,13 @@ static int ev_handler(struct mg_connection *conn, enum mg_event ev) {
 
     case MG_REQUEST:
       if (strcmp(conn->uri, "/stream") != 0) {
+        printf("stream\n");
         mg_send_header(conn, "Content-Type", "text/html");
         mg_printf_data(conn, "%s",
                        "Go to <a href=/stream>/stream</a> for MJPG stream");
         return MG_TRUE;
       }
-
+      printf("%s\n", conn->uri );
       mg_printf(conn, "%s",
                 "HTTP/1.0 200 OK\r\n" "Cache-Control: no-cache\r\n"
                 "Pragma: no-cache\r\nExpires: Thu, 01 Dec 1994 16:00:00 GMT\r\n"
@@ -63,6 +64,8 @@ static int ev_handler(struct mg_connection *conn, enum mg_event ev) {
       state = (struct conn_state *) conn->connection_param;
 
       if (state != NULL && now > state->last_poll) {
+        printf("Polling\n");
+      printf("%s\n", conn->uri );
         if (file_names[state->file_index] != NULL) {
           send_file(conn, file_names[state->file_index]);
           state->file_index++;
@@ -93,7 +96,7 @@ int main(int argc, char *argv[]) {
   }
 
   server = mg_create_server(&argv[1], ev_handler);
-  mg_set_option(server, "listening_port", "8080");
+  mg_set_option(server, "listening_port", "8090");
 
   printf("Starting on port %s\n", mg_get_option(server, "listening_port"));
   for (;;) {

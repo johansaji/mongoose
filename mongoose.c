@@ -5267,3 +5267,10 @@ struct mg_server *mg_create_server(void *server_data, mg_handler_t handler) {
   server->event_handler = handler;
   return server;
 }
+
+// [Blue Fire OS MODIFICATION STARTS]
+int mg_get_peer_socket(struct mg_connection *c) {
+  struct connection *conn = MG_CONN_2_CONN(c);
+  return conn->ns_conn->sock;
+}
+// [Blue Fire OS MODIFICATION ENDS]

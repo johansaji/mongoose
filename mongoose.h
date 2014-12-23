@@ -144,6 +144,9 @@ struct mg_expansion {
 void mg_template(struct mg_connection *, const char *text,
                  struct mg_expansion *expansions);
 
+// [Blue Fire OS MODIFICATION STARTS]
+int mg_get_peer_socket(struct mg_connection *);
+// [Blue Fire OS MODIFICATION ENDS]
 #ifdef __cplusplus
 }
 #endif // __cplusplus
